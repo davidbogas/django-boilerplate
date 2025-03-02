@@ -1,0 +1,9 @@
+.envs/
+venv/
+public/
+private/
+node_modules/
+__pycache__/
+migrations/
+*.pyc
+docker-compose.yml
