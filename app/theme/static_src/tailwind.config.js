@@ -61,4 +61,15 @@ module.exports = {
         require('flyonui'),
         require('flyonui/plugin')
     ],
+    flyonui: {
+        themes: [
+            'light',
+            {
+                dark: {
+                    ...require('flyonui/src/theming/themes')['dark'],
+                    'base-100': '#0d1216',
+                }
+            }
+        ]
+    }
 }
