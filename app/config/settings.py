@@ -39,6 +39,8 @@ INSTALLED_APPS = [
     'tailwind',
     'django_cotton',
     'django_htmx',
+    'django_tasks',
+    'django_tasks.backends.database',
 ]
 
 MIDDLEWARE = [
@@ -100,6 +102,15 @@ CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.redis.RedisCache',
         'LOCATION': 'redis://redis:6379',
+    }
+}
+
+# Tasks
+
+TASKS = {
+    'default': {
+        'BACKEND': 'django_tasks.backends.database.DatabaseBackend',
+        'QUEUES': [],
     }
 }
 

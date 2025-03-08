@@ -64,9 +64,7 @@ docker compose build
 ### 8. Run the development server
 
 ```bash
-docker compose up -d
-python manage.py tailwind start
-python manage.py runserver
+./rundev.sh
 ```
 
 or
