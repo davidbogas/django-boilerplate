@@ -1,60 +1,50 @@
 {
-  "name": "App",
-  "dockerComposeFile": "../docker-compose.yml",
-  "service": "web",
-  "runServices": ["postgres", "redis", "web", "celery", "celery_beat"],
-  "workspaceFolder": "/app",
-  "shutdownAction": "stopCompose",
-  "overrideCommand": false,
-  
-  "customizations": {
-    "vscode": {
-      "extensions": [
-        "ms-python.python",
-        "ms-python.pylint",
-        "ms-python.black-formatter",
-        "ms-python.isort",
-        "charliermarsh.ruff",
-        "bradlc.vscode-tailwindcss",
-        "ms-vscode.vscode-json",
-        "ms-toolsai.jupyter"
-      ],
-      "settings": {
-        "python.defaultInterpreterPath": "/usr/local/bin/python",
-        "python.linting.enabled": true,
-        "python.linting.pylintEnabled": true,
-        "python.formatting.provider": "black",
-        "python.sortImports.provider": "isort",
-        "python.analysis.extraPaths": ["/app/app"],
-        "python.terminal.activateEnvironment": false,
-        "files.associations": {
-          "*.html": "html"
-        },
-        "emmet.includeLanguages": {
-          "django-html": "html"
-        },
-        "tailwindCSS.includeLanguages": {
-          "django-html": "html"
-        },
-        "tailwindCSS.experimental.configFile": "app/theme/tailwind.config.js"
-      }
-    }
-  },
-  
-  "forwardPorts": [8000],
-  "portsAttributes": {
-    "8000": {
-      "label": "Django Dev Server",
-      "onAutoForward": "notify"
-    }
-  },
-  
-  "postCreateCommand": "pip install -r requirements/dev.txt",
-  
-  "remoteUser": "root",
-  
-  "features": {
-    "ghcr.io/devcontainers/features/git:1": {},
-    "ghcr.io/devcontainers/features/github-cli:1": {}
-  }
+	"name": "App",
+	"image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+	"features": {
+		"ghcr.io/devcontainers/features/common-utils:2.4.5": {
+			"installZsh": "true",
+			"upgradePackages": "true",
+			"uid": "1000",
+			"gid": "1000",
+			"installOhMyZsh": "true",
+			"nonFreePackages": "true"
+		},
+		"ghcr.io/devcontainers/features/docker-in-docker:2": {
+			"version": "latest",
+			"enableNonRootDocker": "true",
+			"moby": "true"
+		},
+		"ghcr.io/devcontainers/features/python:1": {
+			"version": "3.13",
+			"installTools": true
+		}
+	},
+	"forwardPorts": [8000, 5432, 6379, 80],
+	"portsAttributes": {
+		"8000": {
+			"label": "Django Dev Server"
+		},
+		"80": {
+			"label": "Nginx"
+		}
+	},
+	"postCreateCommand": "pip install -r requirements/dev.txt",
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"ms-python.python",
+				"junstyle.vscode-django-support",
+				"ms-python.black-formatter",
+				"batisteo.vscode-django",
+				"ms-python.flake8",
+				"ms-python.pylint"
+			],
+			"settings": {
+				"python.defaultInterpreterPath": "/usr/local/bin/python",
+				"python.terminal.activateEnvironment": false,
+				"python.analysis.extraPaths": ["./app"]
+			}
+		}
+	}
 } 
