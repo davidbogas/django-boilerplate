@@ -1,0 +1,60 @@
+{
+  "name": "App",
+  "dockerComposeFile": "../docker-compose.yml",
+  "service": "web",
+  "runServices": ["postgres", "redis", "web", "celery", "celery_beat"],
+  "workspaceFolder": "/app",
+  "shutdownAction": "stopCompose",
+  "overrideCommand": false,
+  
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-python.pylint",
+        "ms-python.black-formatter",
+        "ms-python.isort",
+        "charliermarsh.ruff",
+        "bradlc.vscode-tailwindcss",
+        "ms-vscode.vscode-json",
+        "ms-toolsai.jupyter"
+      ],
+      "settings": {
+        "python.defaultInterpreterPath": "/usr/local/bin/python",
+        "python.linting.enabled": true,
+        "python.linting.pylintEnabled": true,
+        "python.formatting.provider": "black",
+        "python.sortImports.provider": "isort",
+        "python.analysis.extraPaths": ["/app/app"],
+        "python.terminal.activateEnvironment": false,
+        "files.associations": {
+          "*.html": "html"
+        },
+        "emmet.includeLanguages": {
+          "django-html": "html"
+        },
+        "tailwindCSS.includeLanguages": {
+          "django-html": "html"
+        },
+        "tailwindCSS.experimental.configFile": "app/theme/tailwind.config.js"
+      }
+    }
+  },
+  
+  "forwardPorts": [8000],
+  "portsAttributes": {
+    "8000": {
+      "label": "Django Dev Server",
+      "onAutoForward": "notify"
+    }
+  },
+  
+  "postCreateCommand": "pip install -r requirements/dev.txt",
+  
+  "remoteUser": "root",
+  
+  "features": {
+    "ghcr.io/devcontainers/features/git:1": {},
+    "ghcr.io/devcontainers/features/github-cli:1": {}
+  }
+} 

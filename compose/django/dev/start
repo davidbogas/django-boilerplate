@@ -1,0 +1,16 @@
+#!/bin/bash
+
+set -o errexit
+set -o pipefail
+set -o nounset
+
+cd /app/app
+
+python manage.py tailwind install
+python manage.py tailwind start &
+
+python manage.py collectstatic --noinput
+
+python manage.py migrate
+
+python manage.py runserver 0.0.0.0:8000

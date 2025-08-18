@@ -39,8 +39,7 @@ INSTALLED_APPS = [
     'tailwind',
     'django_cotton',
     'django_htmx',
-    'django_tasks',
-    'django_tasks.backends.database',
+    'django_celery_beat',
 ]
 
 MIDDLEWARE = [
@@ -88,11 +87,11 @@ WSGI_APPLICATION = 'config.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('DB_NAME'),
-        'USER': os.getenv('DB_USER'),
-        'PASSWORD': os.getenv('DB_PASSWORD'),
-        'HOST': os.getenv('DB_HOST'),
-        'PORT': os.getenv('DB_PORT'),
+        'NAME': os.getenv('POSTGRES_DB'),
+        'USER': os.getenv('POSTGRES_USER'),
+        'PASSWORD': os.getenv('POSTGRES_PASSWORD'),
+        'HOST': os.getenv('POSTGRES_HOST'),
+        'PORT': os.getenv('POSTGRES_PORT'),
     }
 }
 
@@ -159,15 +158,15 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 
 STATIC_URL = '/static/'
-STATIC_ROOT = BASE_DIR / 'public/static/'
+STATIC_ROOT = BASE_DIR / '../public/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 
 # Media files (uploaded by users)
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'public/media/'
+MEDIA_ROOT = BASE_DIR / '../public/media/'
 
-PRIVATE_MEDIA_ROOT = BASE_DIR / 'private/media/'
+PRIVATE_MEDIA_ROOT = BASE_DIR / '../private/media/'
 DATA_UPLOAD_MAX_MEMORY_SIZE = 5242880
 
 # Default primary key field type
@@ -197,3 +196,24 @@ TAILWIND_APP_NAME = 'theme'
 INTERNAL_IPS = [
     '127.0.0.1',
 ]
+
+# Celery Configuration
+CELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL', 'redis://redis:6379/0')
+CELERY_RESULT_BACKEND = os.getenv('CELERY_RESULT_BACKEND', 'redis://redis:6379/0')
+
+# Celery beat configuration
+CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
+
+# Celery timezone
+CELERY_TIMEZONE = 'UTC'
+
+# Celery task configuration
+CELERY_TASK_ALWAYS_EAGER = False
+CELERY_TASK_EAGER_PROPAGATES = True
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_ACCEPT_CONTENT = ['json']
+
+# Celery worker configuration
+CELERY_WORKER_PREFETCH_MULTIPLIER = 1
+CELERY_WORKER_MAX_TASKS_PER_CHILD = 1000

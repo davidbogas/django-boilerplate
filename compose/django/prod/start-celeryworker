@@ -1,0 +1,9 @@
+#!/bin/bash
+
+set -o errexit
+set -o pipefail
+set -o nounset
+
+cd /app/app
+
+celery -A config worker --loglevel=info --concurrency=4 --uid=1000 --gid=1000 

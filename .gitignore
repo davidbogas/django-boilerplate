@@ -1,7 +1,7 @@
-venv/
-public/media/*
-private/media/*
+.env
+public/
+private/
 node_modules/
 __pycache__/
-migrations/
 *.pyc
+docker-compose.yml
