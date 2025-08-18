@@ -33,17 +33,23 @@
 	"customizations": {
 		"vscode": {
 			"extensions": [
-				"ms-python.python",
-				"junstyle.vscode-django-support",
-				"ms-python.black-formatter",
 				"batisteo.vscode-django",
-				"ms-python.flake8",
-				"ms-python.pylint"
+				"shamanu4.django-intellisense",
+				"mkxml.vscode-filesize",
+				"mrorz.language-gettext",
+				"ecmel.vscode-html-css",
+				"stxr.iconfont-preview",
+				"josee9988.minifyall",
+				"ms-python.vscode-pylance",
+				"ms-python.python",
+				"bradlc.vscode-tailwindcss"
 			],
 			"settings": {
-				"python.defaultInterpreterPath": "/usr/local/bin/python",
+				"python.defaultInterpreterPath": "/usr/local/python/current/bin/python",
 				"python.terminal.activateEnvironment": false,
-				"python.analysis.extraPaths": ["./app"]
+				"python.analysis.extraPaths": ["./app"],
+				"python.analysis.autoImportCompletions": true,
+				"python.analysis.autoSearchPaths": true
 			}
 		}
 	}
