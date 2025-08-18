@@ -1,24 +1,184 @@
 services:
+
+  # PostgreSQL
   postgres:
+    profiles: ["dev", "prod"]
     image: postgres:17-alpine
     container_name: ${PROJECT_NAME}_postgres
     env_file:
-      - .envs/.postgres
-    ports:
-      - 5432:5432
+      - .env
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    networks:
+      - app_network
+    restart: unless-stopped
 
+  # Redis
   redis:
+    profiles: ["dev", "prod"]
     image: redis:7.4.2-alpine
     container_name: ${PROJECT_NAME}_redis
     command: --port 6379
     volumes:
       - redis_data:/data
-    ports:
-      - 6379:6379
+    networks:
+      - app_network
     restart: unless-stopped
+
+  # Django Web Server
+  web:
+    profiles: ["dev"]
+    build:
+      context: .
+      dockerfile: compose/django/Dockerfile
+      args:
+        BUILD_ENV: dev
+    container_name: ${PROJECT_NAME}_web
+    env_file:
+      - .env
+    depends_on:
+      - postgres
+      - redis
+    volumes:
+      - ./app:/app/app
+    ports:
+      - "8000:8000"
+    networks:
+      - app_network
+    restart: unless-stopped
+    command: ["/start"]
+
+  web_prod:
+    profiles: ["prod"]
+    build:
+      context: .
+      dockerfile: compose/django/Dockerfile
+      args:
+        BUILD_ENV: prod
+    container_name: ${PROJECT_NAME}_web_prod
+    env_file:
+      - .env
+    depends_on:
+      - postgres
+      - redis
+    volumes:
+      - static_data:/public/static
+      - media_data:/public/media
+    networks:
+      - app_network
+    restart: unless-stopped
+    command: ["/start"]
+
+  # Celery Worker
+  celery:
+    profiles: ["dev"]
+    build:
+      context: .
+      dockerfile: compose/django/Dockerfile
+      args:
+        BUILD_ENV: dev
+    container_name: ${PROJECT_NAME}_celery
+    env_file:
+      - .env
+    depends_on:
+      - postgres
+      - redis
+      - web
+    volumes:
+      - ./app:/app/app
+    networks:
+      - app_network
+    restart: unless-stopped
+    command: ["/start-celeryworker"]
+
+  celery_prod:
+    profiles: ["prod"]
+    build:
+      context: .
+      dockerfile: compose/django/Dockerfile
+      args:
+        BUILD_ENV: prod
+    container_name: ${PROJECT_NAME}_celery_prod
+    env_file:
+      - .env
+    depends_on:
+      - postgres
+      - redis
+      - web_prod
+    networks:
+      - app_network
+    restart: unless-stopped
+    command: ["/start-celeryworker"]
+
+  # Celery Beat Scheduler
+  celery_beat:
+    profiles: ["dev"]
+    build:
+      context: .
+      dockerfile: compose/django/Dockerfile
+      args:
+        BUILD_ENV: dev
+    container_name: ${PROJECT_NAME}_celery_beat
+    env_file:
+      - .env
+    depends_on:
+      - postgres
+      - redis
+      - web
+    volumes:
+      - ./app:/app/app
+    networks:
+      - app_network
+    restart: unless-stopped
+    command: ["/start-celerybeat"]
+
+  celery_beat_prod:
+    profiles: ["prod"]
+    build:
+      context: .
+      dockerfile: compose/django/Dockerfile
+      args:
+        BUILD_ENV: prod
+    container_name: ${PROJECT_NAME}_celery_beat_prod
+    env_file:
+      - .env
+    depends_on:
+      - postgres
+      - redis
+      - web_prod
+    networks:
+      - app_network
+    restart: unless-stopped
+    command: ["/start-celerybeat"]
+
+  # Nginx
+  # nginx:
+  #   profiles: ["prod"]
+  #   image: nginx:1.27-alpine
+  #   container_name: ${PROJECT_NAME}_nginx
+  #   volumes:
+  #     - static_data:/usr/share/nginx/html/static:ro
+  #     - media_data:/usr/share/nginx/html/media:ro
+  #     - ./compose/nginx/conf.d:/etc/nginx/conf.d:ro
+  #   depends_on:
+  #     - web_prod
+  #   ports:
+  #     - "80:80"
+  #     - "443:443"
+  #   networks:
+  #     - app_network
+  #   restart: unless-stopped
 
 volumes:
   postgres_data:
+    name: ${PROJECT_NAME}_postgres_data
   redis_data:
+    name: ${PROJECT_NAME}_redis_data
+  static_data:
+    name: ${PROJECT_NAME}_static_data
+  media_data:
+    name: ${PROJECT_NAME}_media_data
+
+networks:
+  app_network:
+    name: ${PROJECT_NAME}_network
