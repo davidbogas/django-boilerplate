@@ -1,6 +1,6 @@
 {
 	"name": "${localWorkspaceFolderBasename}",
-	"image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+	"image": "mcr.microsoft.com/devcontainers/base:ubuntu-24.04",
 	"features": {
 		"ghcr.io/devcontainers/features/common-utils:2.4.5": {
 			"installZsh": "true",
@@ -41,12 +41,10 @@
 			"label": "Redis"
 		}
 	},
-	"postCreateCommand": "sudo apt-get update && sudo apt-get install -y postgresql-client libpq-dev python3-dev build-essential && pip install -r requirements/dev.txt",
+	"postCreateCommand": ".devcontainer/setup.sh",
 	"customizations": {
 		"vscode": {
 			"extensions": [
-				"batisteo.vscode-django",
-				"shamanu4.django-intellisense",
 				"mkxml.vscode-filesize",
 				"mrorz.language-gettext",
 				"ecmel.vscode-html-css",
