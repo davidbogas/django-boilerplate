@@ -38,6 +38,11 @@ COPY ./compose/django/${BUILD_ENV}/start-celerybeat /start-celerybeat
 RUN sed -i 's/\r$//g' /start-celerybeat
 RUN chmod +x /start-celerybeat
 
+
+COPY ./compose/django/prod/start-ws /start-ws
+RUN sed -i 's/\r$//g' /start-ws
+RUN chmod +x /start-ws
+
 # Copy the application code
 COPY . /app
 

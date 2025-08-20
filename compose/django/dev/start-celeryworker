@@ -6,4 +6,4 @@ set -o nounset
 
 cd /app/app
 
-celery -A config worker --loglevel=info --concurrency=4 --uid=1000 --gid=1000 
+celery -A config worker --loglevel=info --concurrency=4 --uid=1000 --gid=1000

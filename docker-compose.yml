@@ -62,12 +62,31 @@ services:
       - postgres
       - redis
     volumes:
-      - static_data:/public/static
-      - media_data:/public/media
+      - static_data:/app/public/static
+      - media_data:/app/public/media
     networks:
       - app_network
     restart: unless-stopped
     command: ["/start"]
+
+  # WebSocket Server (Daphne)
+  ws_prod:
+    profiles: ["prod"]
+    build:
+      context: .
+      dockerfile: compose/django/Dockerfile
+      args:
+        BUILD_ENV: prod
+    container_name: ${PROJECT_NAME}_ws_prod
+    env_file:
+      - .env
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - app_network
+    restart: unless-stopped
+    command: ["/start-ws"]
 
   # Celery Worker
   celery:
@@ -152,22 +171,23 @@ services:
     command: ["/start-celerybeat"]
 
   # Nginx
-  # nginx:
-  #   profiles: ["prod"]
-  #   image: nginx:1.27-alpine
-  #   container_name: ${PROJECT_NAME}_nginx
-  #   volumes:
-  #     - static_data:/usr/share/nginx/html/static:ro
-  #     - media_data:/usr/share/nginx/html/media:ro
-  #     - ./compose/nginx/conf.d:/etc/nginx/conf.d:ro
-  #   depends_on:
-  #     - web_prod
-  #   ports:
-  #     - "80:80"
-  #     - "443:443"
-  #   networks:
-  #     - app_network
-  #   restart: unless-stopped
+  nginx:
+    profiles: ["prod"]
+    image: nginx:1.27-alpine
+    container_name: ${PROJECT_NAME}_nginx
+    volumes:
+      - static_data:/usr/share/nginx/static:ro
+      - media_data:/usr/share/nginx/media:ro
+      - ./compose/nginx/conf.d:/etc/nginx/conf.d:ro
+    depends_on:
+      - web_prod
+      - ws_prod
+    ports:
+      - "8080:80"
+      - "8443:443"
+    networks:
+      - app_network
+    restart: unless-stopped
 
 volumes:
   postgres_data:

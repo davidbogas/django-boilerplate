@@ -26,12 +26,12 @@
 	"remoteEnv": {
 		"PYTHONPATH": "${containerWorkspaceFolder}/app"
 	},
-	"forwardPorts": [8000, 5432, 6379, 80],
+	"forwardPorts": [8000, 5432, 6379, 8080],
 	"portsAttributes": {
 		"8000": {
 			"label": "Django Dev Server"
 		},
-		"80": {
+		"8080": {
 			"label": "Nginx"
 		},
 		"5432": {
