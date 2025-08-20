@@ -1,7 +1,23 @@
+# Media files
+private/media/*
+!private/media/.gitkeep
+public/media/*
+!public/media/.gitkeep
+public/static/*
+!public/static/.gitkeep
+
+# Environment files
 .env
-public/
-private/
+
+# Node modules
 node_modules/
+
+# Python
 __pycache__/
 *.pyc
+
+# Docker
 docker-compose.yml
+
+# VSCode
+.vscode/

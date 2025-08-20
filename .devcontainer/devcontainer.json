@@ -1,5 +1,5 @@
 {
-	"name": "App",
+	"name": "${localWorkspaceFolderBasename}",
 	"image": "mcr.microsoft.com/devcontainers/base:ubuntu",
 	"features": {
 		"ghcr.io/devcontainers/features/common-utils:2.4.5": {
@@ -20,6 +20,12 @@
 			"installTools": true
 		}
 	},
+	"containerEnv": {
+		"PYTHONPATH": "${containerWorkspaceFolder}/app"
+	},
+	"remoteEnv": {
+		"PYTHONPATH": "${containerWorkspaceFolder}/app"
+	},
 	"forwardPorts": [8000, 5432, 6379, 80],
 	"portsAttributes": {
 		"8000": {
@@ -27,6 +33,12 @@
 		},
 		"80": {
 			"label": "Nginx"
+		},
+		"5432": {
+			"label": "PostgreSQL"
+		},
+		"6379": {
+			"label": "Redis"
 		}
 	},
 	"postCreateCommand": "sudo apt-get update && sudo apt-get install -y postgresql-client libpq-dev python3-dev build-essential && pip install -r requirements/dev.txt",
@@ -43,14 +55,7 @@
 				"ms-python.vscode-pylance",
 				"ms-python.python",
 				"bradlc.vscode-tailwindcss"
-			],
-			"settings": {
-				"python.defaultInterpreterPath": "/usr/local/python/current/bin/python",
-				"python.terminal.activateEnvironment": false,
-				"python.analysis.extraPaths": ["./app"],
-				"python.analysis.autoImportCompletions": true,
-				"python.analysis.autoSearchPaths": true
-			}
+			]
 		}
 	}
 } 

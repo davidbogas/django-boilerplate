@@ -11,7 +11,7 @@ DJANGO = $(EXEC) bash -c "cd /app/app && python manage.py
 # Default target
 help:
 	@echo "Available commands:"
-	@echo "  build          - Build all containers"
+	@echo "  build          - Build all containers (with --no-cache)"
 	@echo "  up             - Start all services"
 	@echo "  down           - Stop all services"
 	@echo "  restart        - Restart all services"
@@ -29,7 +29,7 @@ help:
 
 # Docker commands
 build:
-	$(COMPOSE) build
+	$(COMPOSE) build --no-cache
 
 up:
 	$(COMPOSE) up
@@ -48,7 +48,7 @@ logs-web:
 
 clean:
 	$(COMPOSE) down -v --remove-orphans
-	docker system prune -f
+	$(COMPOSE) rm -f
 
 rebuild: clean build up
 
